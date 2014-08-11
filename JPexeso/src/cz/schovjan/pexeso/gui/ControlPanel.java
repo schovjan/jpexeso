@@ -6,9 +6,10 @@
 package cz.schovjan.pexeso.gui;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -27,40 +28,47 @@ public class ControlPanel extends JPanel {
 
     public ControlPanel() {
         setLayout(new GridBagLayout());
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.weightx = 0.5;
 
         left = new JPanel();
+        left.setLayout(new GridBagLayout());
         right = new JPanel();
+        right.setLayout(new GridBagLayout());
         add(left, gbc);
         add(right, gbc);
 
+        Font fontBig = new Font(Font.SANS_SERIF, Font.BOLD, 18);
+        Font fontSmall = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
+
         score1 = new JLabel();
+        score1.setFont(fontBig);
         score2 = new JLabel();
-        
+        score2.setFont(fontBig);
+
         stringOfSuccess1 = new JLabel();
+        stringOfSuccess1.setFont(fontSmall);
         stringOfSuccess2 = new JLabel();
+        stringOfSuccess2.setFont(fontSmall);
 
-        left.add(new JLabel("Skóre: "));
-        left.add(score1);
+        gbc.insets = new Insets(4, 10, 4, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        left.add(score1, gbc);
 
-        left.add(new JLabel("Řada: "));
-        left.add(stringOfSuccess1);
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        left.add(stringOfSuccess1, gbc);
 
-        right.add(new JLabel("Skóre: "));
-        right.add(score2);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        right.add(score2, gbc);
 
-        right.add(new JLabel("Řada: "));
-        right.add(stringOfSuccess2);
-    }
-
-    public void setScore1(int value) {
-        score1.setText(String.valueOf(value));
-    }
-
-    public void setScore2(int value) {
-        score2.setText(String.valueOf(value));
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        right.add(stringOfSuccess2, gbc);
     }
 
     public void playerOnMove(int value) {
@@ -73,11 +81,19 @@ public class ControlPanel extends JPanel {
         }
     }
 
+    public void setScore1(int value) {
+        score1.setText(String.format("Skóre: %d", value));
+    }
+
+    public void setScore2(int value) {
+        score2.setText(String.format("Skóre: %d", value));
+    }
+
     public void setStringOfSuccess1(int stringOfSuccess) {
-        stringOfSuccess1.setText(String.valueOf(stringOfSuccess));
+        stringOfSuccess1.setText(String.format("Řada: %d", stringOfSuccess));
     }
 
     public void setStringOfSuccess2(int stringOfSuccess) {
-        stringOfSuccess2.setText(String.valueOf(stringOfSuccess));
+        stringOfSuccess2.setText(String.format("Řada: %d", stringOfSuccess));
     }
 }

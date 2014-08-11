@@ -20,8 +20,8 @@ import java.awt.Panel;
  */
 public class Cell extends Panel {
 
-    private int width = 140; //rozmer v px
-    private int height = (int) ((double) width * (1d - 1d / 3d)); //rozmer v px
+    private final int width = 140; //rozmer v px
+    private final int height = (int) ((double) width * (1d - 1d / 3d)); //rozmer v px
     private Image image;
     private String imageName;
     private boolean showImage;

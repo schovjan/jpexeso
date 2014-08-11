@@ -23,19 +23,19 @@ import javax.swing.JPanel;
 public class Pexeso extends JFrame {
 
     private final Dimension windowSize = new Dimension(600, 600);
-    private Manager manager;
-    private JPanel content;
+    private final InformationDialog informationDialog;
+    private final Manager manager;
+    private final JPanel content;
 
     public Pexeso() throws IOException {
         super();
+        informationDialog = new InformationDialog(this);
         ControlPanel control = new ControlPanel();
         manager = new Manager(this, control);
         //
         setTitle("Pexeso");
-        setMaximumSize(windowSize);
         setSize(windowSize);
         setPreferredSize(windowSize);
-        setMinimumSize(windowSize);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -61,6 +61,14 @@ public class Pexeso extends JFrame {
         repaint();
     }
 
+    public void end(int countOfMove) {
+        JOptionPane.showMessageDialog(null, "Počet tahů: " + countOfMove, "Pexeso", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showInformation() {
+        informationDialog.setVisible(true);
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -68,9 +76,4 @@ public class Pexeso extends JFrame {
         Pexeso pexeso = new Pexeso();
         pexeso.setVisible(true);
     }
-
-    public void end(int countOfMove) {
-        JOptionPane.showMessageDialog(null, "Počet tahů: " + countOfMove, "Pexeso", JOptionPane.INFORMATION_MESSAGE);
-    }
-
 }

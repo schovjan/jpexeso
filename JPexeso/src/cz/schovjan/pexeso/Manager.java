@@ -8,12 +8,15 @@ package cz.schovjan.pexeso;
 import cz.schovjan.pexeso.gui.Pexeso;
 import cz.schovjan.pexeso.gui.Cell;
 import cz.schovjan.pexeso.gui.ControlPanel;
+import cz.schovjan.pexeso.model.Game;
 import java.awt.Image;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -22,104 +25,32 @@ import javax.imageio.ImageIO;
  *
  * @author schovjan
  */
-public class Manager {
+public final class Manager {
 
     private Pexeso pexeso;
     private ControlPanel control;
     private List<Cell> cells;
-    private int score1;
-    private int score2;
-    private int playerOnMove;
     private int stringOfSuccess;
-    private int stringOfSuccess1;
-    private int stringOfSuccess2;
-    private int countOfMove;
-
     private Cell cell1;
     private Cell cell2;
+    private Game game;
 
     public Manager(Pexeso pexeso, ControlPanel control) {
         this.pexeso = pexeso;
         this.control = control;
-        score1 = 0;
-        score2 = 0;
-        cell1 = null;
-        cell2 = null;
-        playerOnMove = 0;
-        stringOfSuccess = 0;
-        stringOfSuccess1 = 0;
-        stringOfSuccess2 = 0;
-        countOfMove = 0;
-        control.playerOnMove(playerOnMove);
-        this.cells = loadCells();
-    }
-
-    public void turnCell(Cell cell) {
-        if (cell1 == null) {
-            cell1 = cell;
-            cell.setShowImage(true);
-        } else if (cell2 == null) {
-            cell2 = cell;
-            countOfMove++;
-            cell.setShowImage(true);
-            if (validate()) {
-                stringOfSuccess++;
-                if (playerOnMove % 2 == 0) {
-                    stringOfSuccess1 = Math.max(stringOfSuccess1, stringOfSuccess);
-                    control.setScore1(++score1);
-                    control.setStringOfSuccess1(stringOfSuccess1);
-                } else {
-                    stringOfSuccess2 = Math.max(stringOfSuccess2, stringOfSuccess);
-                    control.setScore2(++score2);
-                    control.setStringOfSuccess2(stringOfSuccess2);
-                }
-            }
-            new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            if (validate()) {
-                                cell1.setFinded(true);
-                                cell2.setFinded(true);
-                            } else {
-                                cell1.setShowImage(false);
-                                cell2.setShowImage(false);
-                                stringOfSuccess = 0;
-                                control.playerOnMove(++playerOnMove);
-                            }
-                            cell1.refresh();
-                            cell2.refresh();
-                            cell1 = null;
-                            cell2 = null;
-
-                            if (score1 + score2 == cells.size() / 2) {
-                                pexeso.end(countOfMove);
-                            }
-                        }
-                    },
-                    1700);
-        }
-    }
-
-    public boolean validate() {
-        return cell1.getImageName().equals(cell2.getImageName());
+        loadCells();
     }
 
     public void newGame() {
+        game = new Game();
         cell1 = null;
         cell2 = null;
-        playerOnMove = 0;
-        countOfMove = 0;
         stringOfSuccess = 0;
-        stringOfSuccess1 = 0;
-        stringOfSuccess2 = 0;
-        score1 = 0;
-        score2 = 0;
-        control.setScore1(score1);
-        control.setScore2(score2);
-        control.setStringOfSuccess1(stringOfSuccess1);
-        control.setStringOfSuccess2(stringOfSuccess2);
-        control.playerOnMove(playerOnMove);
+        control.setScore1(game.getPlayer1().getScore());
+        control.setScore2(game.getPlayer2().getScore());
+        control.setStringOfSuccess1(game.getPlayer1().getStringOfSuccess());
+        control.setStringOfSuccess2(game.getPlayer2().getStringOfSuccess());
+        control.playerOnMove(game.getPlayerOnMove());
 
         for (Cell c : getCells()) {
             c.setFinded(false);
@@ -128,13 +59,41 @@ public class Manager {
         pexeso.newGame();
     }
 
-    public List<Cell> getCells() {
-        return this.cells;
+    public void turnCell(Cell cell) {
+        if (cell1 == null) {
+            cell1 = cell;
+            cell.setShowImage(true);
+        } else if (cell2 == null) {
+            cell2 = cell;
+            cell.setShowImage(true);
+            game.moveIncrement();
+            validate();
+            new Timer().schedule(new TurnBackTimerTask(), 1700);
+        }
     }
 
-    public List loadCells() {
+    public void validate() {
+        if (isPair()) {
+            stringOfSuccess++;
+            if (game.getPlayerOnMove() % 2 == 0) {
+                game.getPlayer1().setStringOfSuccess(Math.max(game.getPlayer1().getStringOfSuccess(), stringOfSuccess));
+                control.setScore1(game.getPlayer1().scoreIncrement());
+                control.setStringOfSuccess1(game.getPlayer1().getStringOfSuccess());
+            } else {
+                game.getPlayer2().setStringOfSuccess(Math.max(game.getPlayer2().getStringOfSuccess(), stringOfSuccess));
+                control.setScore2(game.getPlayer2().scoreIncrement());
+                control.setStringOfSuccess2(game.getPlayer2().getStringOfSuccess());
+            }
+        }
+    }
+
+    private boolean isPair() {
+        return cell1.getImageName().equals(cell2.getImageName());
+    }
+
+    public void loadCells() {
         try {
-            List cells = new ArrayList();
+            cells = new ArrayList();
             File folder = new File(System.getProperty("user.home") + "/.pexeso");
             File[] listFiles = folder.listFiles(new FilenameFilter() {
 
@@ -149,10 +108,44 @@ public class Manager {
                 cells.add(cell);
                 cells.add(cell.getCopy());
             }
-            return cells;
         } catch (IOException ex) {
             Logger.getLogger(Manager.class.getName()).log(Level.SEVERE, null, ex);
+            cells = new ArrayList();
         }
-        return new ArrayList<Cell>();
+    }
+
+    public List<Cell> getCells() {
+        return this.cells;
+    }
+
+    public void showInformation() {
+        pexeso.showInformation();
+    }
+
+    /**
+     * Otoceni karticek zpet nebo jejich zmizeni z hraci plochy
+     */
+    class TurnBackTimerTask extends TimerTask {
+
+        @Override
+        public void run() {
+            if (isPair()) {
+                cell1.setFinded(true);
+                cell2.setFinded(true);
+            } else {
+                cell1.setShowImage(false);
+                cell2.setShowImage(false);
+                stringOfSuccess = 0;
+                control.playerOnMove(game.playerOnMoveIncrement());
+            }
+            cell1.refresh();
+            cell2.refresh();
+            cell1 = null;
+            cell2 = null;
+
+            if (game.getTurnedPairsCount() == cells.size() / 2) {
+                pexeso.end(game.getCountOfMove());
+            }
+        }
     }
 }

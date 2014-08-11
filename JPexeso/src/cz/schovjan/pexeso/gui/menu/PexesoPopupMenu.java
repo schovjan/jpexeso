@@ -28,6 +28,13 @@ public class PexesoPopupMenu extends JPopupMenu {
                 manager.newGame();
             }
         }));
+        add(new JMenuItem(new AbstractAction("Informace") {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                manager.showInformation();
+            }
+        }));
         add(new JMenuItem(new AbstractAction("Konec") {
 
             @Override
