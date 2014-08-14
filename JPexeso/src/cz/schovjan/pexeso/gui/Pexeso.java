@@ -5,7 +5,7 @@
  */
 package cz.schovjan.pexeso.gui;
 
-import cz.schovjan.pexeso.Manager;
+import cz.schovjan.pexeso.manager.Manager;
 import cz.schovjan.pexeso.gui.listener.PexesoMouseListener;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,15 +23,18 @@ import javax.swing.JPanel;
 public class Pexeso extends JFrame {
 
     private final Dimension windowSize = new Dimension(600, 600);
-    private final InformationDialog informationDialog;
     private final Manager manager;
     private final JPanel content;
 
     public Pexeso() throws IOException {
         super();
-        informationDialog = new InformationDialog(this);
         ControlPanel control = new ControlPanel();
         manager = new Manager(this, control);
+        manager.loadCells();
+        if (manager.getCells().isEmpty()) {
+            Pexeso.showErrorMessage("Do složky \".pexeso\" v domovském adresáři nahrajte obrázky ve formátu JPG.");
+            System.exit(0);
+        }
         //
         setTitle("Pexeso");
         setSize(windowSize);
@@ -39,13 +42,13 @@ public class Pexeso extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
+        setIconImage(getToolkit().getImage(getClass().getResource("/resource/ico32.png")));
         //
         addMouseListener(new PexesoMouseListener(this, manager));
         //
         add(control, BorderLayout.NORTH);
         content = new JPanel(new FlowLayout(FlowLayout.LEFT));
         add(content, BorderLayout.CENTER);
-        manager.loadCells();
         //
         manager.newGame();
     }
@@ -61,12 +64,30 @@ public class Pexeso extends JFrame {
         repaint();
     }
 
-    public void end(int countOfMove) {
-        JOptionPane.showMessageDialog(null, "Počet tahů: " + countOfMove, "Pexeso", JOptionPane.INFORMATION_MESSAGE);
+    public void showInformationDialog() {
+        InformationDialog informationDialog = new InformationDialog(this);
+        informationDialog.setVisible(true);
     }
 
-    public void showInformation() {
-        informationDialog.setVisible(true);
+    public static void showInfoMessage(String textMessage) {
+        JOptionPane.showMessageDialog(null, "\n" + textMessage + "\n\n", "Pexeso", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static void showAlertMessage(String textMessage) {
+        JOptionPane.showMessageDialog(null, "\n" + textMessage + "\n\n", "Pexeso", JOptionPane.WARNING_MESSAGE);
+    }
+
+    public static void showErrorMessage(String textMessage) {
+        JOptionPane.showMessageDialog(null, "\n" + textMessage + "\n\n", "Pexeso", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public static void showException(Exception ex) {
+        StringBuilder sb = new StringBuilder();
+        StackTraceElement[] stackTrace = ex.getStackTrace();
+        for (StackTraceElement ste : stackTrace) {
+            sb.append(ste.toString());
+        }
+        showErrorMessage(ex.getMessage() + "\n\n\n" + sb.toString());
     }
 
     /**

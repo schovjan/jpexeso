@@ -53,7 +53,8 @@ public class ControlPanel extends JPanel {
         stringOfSuccess2 = new JLabel();
         stringOfSuccess2.setFont(fontSmall);
 
-        gbc.insets = new Insets(4, 10, 4, 10);
+        gbc.insets = new Insets(4, 20, 4, 20);
+        gbc.weightx = 0;
         gbc.gridx = 0;
         gbc.gridy = 0;
         left.add(score1, gbc);

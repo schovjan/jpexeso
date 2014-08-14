@@ -3,17 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package cz.schovjan.pexeso;
+package cz.schovjan.pexeso.manager;
 
 import cz.schovjan.pexeso.gui.Pexeso;
 import cz.schovjan.pexeso.gui.Cell;
 import cz.schovjan.pexeso.gui.ControlPanel;
 import cz.schovjan.pexeso.model.Game;
+import cz.schovjan.pexeso.model.PropertiesWrapper;
 import java.awt.Image;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,11 +37,16 @@ public final class Manager {
     private Cell cell1;
     private Cell cell2;
     private Game game;
+    private PropertiesManager propManager;
+    private PropertiesWrapper properties;
 
-    public Manager(Pexeso pexeso, ControlPanel control) {
+    public Manager(Pexeso pexeso, ControlPanel control) throws IOException {
         this.pexeso = pexeso;
         this.control = control;
-        loadCells();
+        //
+        properties = new PropertiesWrapper();
+        propManager = new PropertiesManager(properties);
+        propManager.loadSettings();
     }
 
     public void newGame() {
@@ -119,7 +127,14 @@ public final class Manager {
     }
 
     public void showInformation() {
-        pexeso.showInformation();
+        pexeso.showInformationDialog();
+    }
+
+    private void endOfGame() {
+        properties.maxString = Collections.max(Arrays.asList(properties.maxString, game.getPlayer1().getStringOfSuccess(), game.getPlayer2().getStringOfSuccess()));
+        properties.minMove = Math.min(properties.minMove, game.getCountOfMove());
+        propManager.saveSettings();
+        Pexeso.showInfoMessage(String.format("Počet tahů: %d\n\nMinimální počet tahů: %d\nMaximální řad: %d", game.getCountOfMove(), properties.minMove, properties.maxString));
     }
 
     /**
@@ -144,7 +159,7 @@ public final class Manager {
             cell2 = null;
 
             if (game.getTurnedPairsCount() == cells.size() / 2) {
-                pexeso.end(game.getCountOfMove());
+                endOfGame();
             }
         }
     }

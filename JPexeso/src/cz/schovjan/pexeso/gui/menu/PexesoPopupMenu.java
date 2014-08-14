@@ -5,7 +5,7 @@
  */
 package cz.schovjan.pexeso.gui.menu;
 
-import cz.schovjan.pexeso.Manager;
+import cz.schovjan.pexeso.manager.Manager;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;

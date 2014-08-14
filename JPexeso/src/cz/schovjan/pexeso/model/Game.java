@@ -66,4 +66,8 @@ public class Game {
     public int getTurnedPairsCount() {
         return player1.getScore() + player2.getScore();
     }
+
+    public int getDifferentOfScore() {
+        return Math.max(getPlayer1().getScore(), getPlayer2().getScore()) - Math.min(getPlayer1().getScore(), getPlayer2().getScore());
+    }
 }
