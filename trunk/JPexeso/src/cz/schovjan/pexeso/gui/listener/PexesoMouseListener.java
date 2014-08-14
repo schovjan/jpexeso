@@ -5,7 +5,7 @@
  */
 package cz.schovjan.pexeso.gui.listener;
 
-import cz.schovjan.pexeso.Manager;
+import cz.schovjan.pexeso.manager.Manager;
 import cz.schovjan.pexeso.gui.Pexeso;
 import cz.schovjan.pexeso.gui.menu.PexesoPopupMenu;
 import java.awt.event.MouseAdapter;
