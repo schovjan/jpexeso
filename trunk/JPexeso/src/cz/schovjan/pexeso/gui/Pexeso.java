@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.schovjan.pexeso.gui;
 
 import cz.schovjan.pexeso.manager.Manager;
 import cz.schovjan.pexeso.gui.listener.PexesoMouseListener;
+import cz.schovjan.pexeso.util.Constant;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -36,13 +32,13 @@ public class Pexeso extends JFrame {
             System.exit(0);
         }
         //
-        setTitle("Pexeso");
+        setTitle(Constant.APP_NAME);
         setSize(windowSize);
         setPreferredSize(windowSize);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
-        setIconImage(getToolkit().getImage(getClass().getResource("/resource/ico32.png")));
+        setIconImage(getToolkit().getImage(getClass().getResource(Constant.PATH_ICON)));
         //
         addMouseListener(new PexesoMouseListener(this, manager));
         //

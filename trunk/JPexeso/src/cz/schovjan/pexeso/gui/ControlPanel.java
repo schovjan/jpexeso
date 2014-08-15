@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.schovjan.pexeso.gui;
 
+import cz.schovjan.pexeso.util.Constant;
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,18 +35,15 @@ public class ControlPanel extends JPanel {
         add(left, gbc);
         add(right, gbc);
 
-        Font fontBig = new Font(Font.SANS_SERIF, Font.BOLD, 18);
-        Font fontSmall = new Font(Font.SANS_SERIF, Font.PLAIN, 14);
-
         score1 = new JLabel();
-        score1.setFont(fontBig);
+        score1.setFont(Constant.FONT_BIG);
         score2 = new JLabel();
-        score2.setFont(fontBig);
+        score2.setFont(Constant.FONT_BIG);
 
         stringOfSuccess1 = new JLabel();
-        stringOfSuccess1.setFont(fontSmall);
+        stringOfSuccess1.setFont(Constant.FONT_SMALL);
         stringOfSuccess2 = new JLabel();
-        stringOfSuccess2.setFont(fontSmall);
+        stringOfSuccess2.setFont(Constant.FONT_SMALL);
 
         gbc.insets = new Insets(4, 20, 4, 20);
         gbc.weightx = 0;

@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cz.schovjan.pexeso.gui;
 
+import cz.schovjan.pexeso.util.Constant;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.io.IOException;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -30,14 +25,12 @@ public class InformationDialog extends JDialog {
         setTitle("Informace");
         //
         try {
-            Font fontBig = new Font(Font.SANS_SERIF, Font.BOLD, 18);
-
-            JEditorPane ep = new JEditorPane(ClassLoader.getSystemResource("resource/information.html"));
+            JEditorPane ep = new JEditorPane(ClassLoader.getSystemResource(Constant.PATH_INFORMATION));
             ep.setEditable(false);
 
-            JLabel icon = new JLabel(new ImageIcon(getToolkit().getImage(getClass().getResource("/resource/ico32.png"))));
-            JLabel title = new JLabel("PEXESO");
-            title.setFont(fontBig);
+            JLabel icon = new JLabel(new ImageIcon(getToolkit().getImage(getClass().getResource(Constant.PATH_ICON))));
+            JLabel title = new JLabel(Constant.APP_NAME);
+            title.setFont(Constant.FONT_BIG);
 
             GroupLayout layout = new GroupLayout(getContentPane());
             setLayout(layout);
